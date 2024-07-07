@@ -11,12 +11,12 @@ int main()
 {
     QString driver      = "QSQLITE"; //"QPSQL";
     QString connection  = "conn1";
-    QString dbName      = "test.db3"; //"postgres";
+    QString dbPath      = "test.db3"; //"postgres";
     QString hostName    = "localhost";
     QString userName    = "postgres";
     QString password    = "postgres";
     quint16 port        = 5432;
-    QSharedPointer<DBInterface> dbInterface = QSharedPointer<DBInterface>::create(driver, connection, hostName, dbName, userName, password, port);
+    QSharedPointer<DBInterface> dbInterface = QSharedPointer<DBInterface>::create(driver, connection, hostName, dbPath, userName, password, port);
 
     DBHandler dbHandler(dbInterface);
     if (!dbHandler.openDatabase())

@@ -12,7 +12,7 @@
 class DBInterface
 {
 public:
-    DBInterface(const QString &_driver, const QString &_connection, const QString &_hostName, const QString &_databaseName, const QString &_user, const QString &_password, quint16 _port);
+    DBInterface(const QString &_driver, const QString &_connection, const QString &_hostName, const QString &_databasezPath, const QString &_user, const QString &_password, quint16 _port);
     ~DBInterface();
 
     bool open();
@@ -27,7 +27,7 @@ private:
     QString driver;
     QString connection;
     QString hostName;
-    QString databaseName;
+    QString databasePath;
     QString user;
     QString password;
     quint16 port;

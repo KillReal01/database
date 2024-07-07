@@ -1,14 +1,15 @@
 ﻿#include "DBInterface.h"
 
-DBInterface::DBInterface(const QString &_driver, const QString &_connection, const QString &_hostName, const QString &_databaseName, const QString &_user, const QString &_password, quint16 _port)
+#include <QFileInfo>
+
+DBInterface::DBInterface(const QString &_driver, const QString &_connection, const QString &_hostName, const QString &_databasePath, const QString &_user, const QString &_password, quint16 _port)
     : driver(_driver)
     , connection(_connection)
     , hostName(_hostName)
-    , databaseName(_databaseName)
+    , databasePath(_databasePath)
     , user(_user)
     , password(_password)
     , port(_port)
-    , directory("db")
 {}
 
 DBInterface::~DBInterface()
@@ -38,9 +39,8 @@ bool DBInterface::commit()
 
 bool DBInterface::open()
 {
-    QDir curruntPath(QDir::currentPath());
-    QDir directoryPath      = curruntPath.filePath(directory.path());
-    QString databasePath    = directoryPath.filePath(databaseName);
+    QString fullPath = QDir::current().filePath(databasePath);
+    QDir directoryPath(QFileInfo(fullPath).absolutePath());
 
     if (!directoryPath.exists())
         directoryPath.mkdir(".");
