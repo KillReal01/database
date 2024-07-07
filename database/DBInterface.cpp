@@ -1,6 +1,5 @@
 ﻿#include "DBInterface.h"
 
-
 DBInterface::DBInterface(const QString &_driver, const QString &_connection, const QString &_hostName, const QString &_databaseName, const QString &_user, const QString &_password, quint16 _port)
     : driver(_driver)
     , connection(_connection)
@@ -9,14 +8,15 @@ DBInterface::DBInterface(const QString &_driver, const QString &_connection, con
     , user(_user)
     , password(_password)
     , port(_port)
-{ }
+    , directory("db")
+{}
 
 DBInterface::~DBInterface()
 {
     close();
 }
 
-bool DBInterface::executeQuery(const QString &query)
+bool DBInterface::exec(const QString &query)
 {
     if (sdb.isOpen())
     {
@@ -25,7 +25,8 @@ bool DBInterface::executeQuery(const QString &query)
         {
             return true;
         }
-        qDebug() << "[DBInterface] Failed to execute query:" << q.lastError();
+        qDebug() << "[DBInterface] Failed to execute query:" << q.lastQuery()
+                 << "; Error: " << q.lastError();
     }
     return false;
 }
@@ -37,9 +38,16 @@ bool DBInterface::commit()
 
 bool DBInterface::open()
 {
+    QDir curruntPath(QDir::currentPath());
+    QDir directoryPath      = curruntPath.filePath(directory.path());
+    QString databasePath    = directoryPath.filePath(databaseName);
+
+    if (!directoryPath.exists())
+        directoryPath.mkdir(".");
+
     sdb = QSqlDatabase::addDatabase(driver, connection);
     sdb.setHostName(hostName);
-    sdb.setDatabaseName(databaseName);
+    sdb.setDatabaseName(databasePath);
     sdb.setUserName(user);
     sdb.setPassword(password);
     sdb.setPort(port);

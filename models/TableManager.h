@@ -3,9 +3,6 @@
 
 #include <QVariantMap>
 #include <QString>
-#include <QSqlQuery>
-#include <QSqlError>
-#include <QDebug>
 
 
 enum ColumnType
@@ -44,7 +41,7 @@ public:
 
     QString getName() const;
 
-private:
+protected:
     QString typeToString(const ColumnType& type) const;
     void wrapText(const QString& key, QString &value) const;
 

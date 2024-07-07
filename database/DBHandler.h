@@ -13,15 +13,18 @@
 class DBHandler
 {
 public:
-    DBHandler(const QString &_driver, const QString &_connection, const QString &_hostName, const QString &_databaseName, const QString &_user, const QString &_password, quint16 _port);
+    DBHandler(const QSharedPointer<DBInterface>& db);
     ~DBHandler();
 
-    void addTable(const QSharedPointer<TableManager>& table);
+    bool openDatabase();
+    void closeDatabase();
 
-    bool insert(const QString &tableName, const QVariantMap& data) const;
-    bool update(const QString &tableName, const QVariantMap& primaryKeys, const QVariantMap& data) const;
-    bool remove(const QString &tableName, const QVariantMap& primaryKeys) const;
-    bool removeAll(const QString &tableName) const;
+    bool insertTable(const QSharedPointer<TableManager>& table);
+
+    bool insertRow(const QString &tableName, const QVariantMap& data) const;
+    bool updateRow(const QString &tableName, const QVariantMap& primaryKeys, const QVariantMap& data) const;
+    bool removeRow(const QString &tableName, const QVariantMap& primaryKeys) const;
+    bool removeAllRows(const QString &tableName) const;
 
 private:
     QSharedPointer<DBInterface> db;

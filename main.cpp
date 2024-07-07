@@ -4,19 +4,23 @@
 #include <QDebug>
 
 #include "DBHandler.h"
+#include "DBInterface.h"
 #include "TableManager.h"
 
 int main()
 {
     QString driver      = "QSQLITE"; //"QPSQL";
     QString connection  = "conn1";
-    QString dbName      = "Iridium.db3"; //"postgres";
+    QString dbName      = "test.db3"; //"postgres";
     QString hostName    = "localhost";
-    QString userName        = "postgres";
+    QString userName    = "postgres";
     QString password    = "postgres";
     quint16 port        = 5432;
+    QSharedPointer<DBInterface> dbInterface = QSharedPointer<DBInterface>::create(driver, connection, hostName, dbName, userName, password, port);
 
-    DBHandler db(driver, connection, hostName, dbName, userName, password, port);
+    DBHandler dbHandler(dbInterface);
+    if (!dbHandler.openDatabase())
+        return 1;
 
     QString tableName   = "USERS";
     QString userId      = "USER_ID";
@@ -26,14 +30,14 @@ int main()
     usersTable->addPrimaryKey(userId, ColumnType::INTEGER)
             .addColumn(name, ColumnType::TEXT);
 
-    db.addTable(usersTable);
+    dbHandler.insertTable(usersTable);
 
     QVariantMap user;
     user[name] = "Kirill";
-    db.insert(tableName, user);
+    dbHandler.insertRow(tableName, user);
 
     user[name] = "Andrei";
-    db.insert(usersTable->getName(), user);
+    dbHandler.insertRow(usersTable->getName(), user);
 
     QString orderId = "ORDER_ID";
     tableName       = "ORDERS";
@@ -44,15 +48,14 @@ int main()
                .addColumn(product, ColumnType::TEXT)
                .addForeignKey(userId, ColumnType::INTEGER, tableName, userId);
 
-    db.addTable(ordersTable);
+    dbHandler.insertTable(ordersTable);
 
     QVariantMap order;
     order[product] = "burger";
     order[userId] = 1;
-    db.insert(ordersTable->getName(), order);
+    dbHandler.insertRow(ordersTable->getName(), order);
 
     order[product] = "chips";
-    db.insert(ordersTable->getName(), order);
-
+    dbHandler.insertRow(ordersTable->getName(), order);
     return 0;
 }

@@ -1,6 +1,5 @@
 ﻿#include "TableManager.h"
 
-
 TableManager::TableManager(const QString &tableName)
     : tableName(tableName)
 {}
